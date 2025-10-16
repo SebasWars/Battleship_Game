@@ -25,6 +25,25 @@ const renderBoard = (board, side, prefix) => {
       const BUTTON = document.createElement("button");
       BUTTON.id = `${prefix}-${rowIndex}-${colIndex}`;
 
+      BUTTON.addEventListener("dragover", (event) => event.preventDefault());
+
+      BUTTON.addEventListener("drop", (event) => {
+        const SHIP_LENGTH = parseInt(event.dataTransfer.getData("shipLength"));
+        const SHIP_ID = event.dataTransfer.getData("shipID");
+        const SHIP_ORIENTATION =
+          event.dataTransfer.getData("shipOrientation") || "horizontal";
+
+        let newShip = {
+          row: rowIndex,
+          col: colIndex,
+          id: SHIP_ID,
+          length: SHIP_LENGTH,
+          orientation: SHIP_ORIENTATION
+        };
+
+        console.log(newShip);
+      });
+
       if (board[rowIndex][colIndex] === 0) {
         BUTTON.style.backgroundColor = "rgb(40, 84, 228)";
       }
@@ -44,14 +63,20 @@ const renderShips = () => {
       const BUTTON = document.createElement("button");
       SHIP_CONTAINER.appendChild(BUTTON);
     });
+
+    SHIP_CONTAINER.addEventListener("dragstart", (event) => {
+      const SHIP_LENGTH = event.dataTransfer.setData("shipLength", ship.length);
+      const SHIP_ID = event.dataTransfer.setData("shipID", SHIP_CONTAINER.id);
+    });
+
     PORT_ELEMENT.appendChild(SHIP_CONTAINER);
   });
 };
 
 const renderGame = () => {
   renderBoard(PLAYER_ARRAY, PLAYER_SIDE_ELEMENT, "Player");
-  renderBoard(COMPUTER_ARRAY, COMPUTER_SIDE_ELEMENT, 'Computer');
-  renderShips()
+  renderBoard(COMPUTER_ARRAY, COMPUTER_SIDE_ELEMENT, "Computer");
+  renderShips();
 };
 
 renderGame();
