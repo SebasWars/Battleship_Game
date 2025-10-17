@@ -67,7 +67,6 @@ button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-evenly;
   width: 240px;
   margin-left: 10px;
   height: auto;
@@ -77,6 +76,7 @@ button {
 .ship {
   display: inline-flex;
   cursor: grab;
+  margin: 10px 0;
   button {
     background-color: rgb(43, 34, 34);
     cursor: grab;
