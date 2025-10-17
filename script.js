@@ -38,10 +38,14 @@ const renderBoard = (board, side, prefix) => {
           col: colIndex,
           id: SHIP_ID,
           length: SHIP_LENGTH,
-          orientation: SHIP_ORIENTATION
+          orientation: SHIP_ORIENTATION,
         };
 
-        console.log(newShip);
+        if (canPlaceShip(board, newShip)) {
+          removeShipFromPort(SHIP_ID)
+          console.log("can!");
+          placeShip(board, newShip, 'Player')
+        }
       });
 
       if (board[rowIndex][colIndex] === 0) {
@@ -72,6 +76,45 @@ const renderShips = () => {
     PORT_ELEMENT.appendChild(SHIP_CONTAINER);
   });
 };
+
+const canPlaceShip = (board, ship) => {
+  const { row, col, length, orientation } = ship;
+  for (let i = 0; i < length; i++) {
+    const r = orientation === "horizontal" ? row : row + i;
+    const c = orientation === "horizontal" ? col + i : col;
+
+    /* TODO: VALIDACION PARA QUE NO PUEDAN HABER 2 BOTES JUNTOS,
+    ES DECIR QUE TIENE QUE HABER MINIMO 1 CELDA EN MEDIO
+    */
+
+    if (r >= board.length || c >= board.length || board[r][c] === 1){
+      alert('Sorry, ship cannot be place here, choose another position.');
+      return false
+    };
+  }
+  return true;
+};
+
+const placeShip = (board, ship, prefix) => {
+  const { row, col, length, orientation } = ship;
+  for (let i = 0; i < length; i++) {
+    const r = orientation === "horizontal" ? row : row + i;
+    const c = orientation === "horizontal" ? col + i : col;
+
+    board[r][c] = 1;
+
+    const SHIP_CELL = document.getElementById(`${prefix}-${r}-${c}`);
+    SHIP_CELL.style.backgroundColor = 'grey'
+    SHIP_CELL.dataset.id = ship.id;
+  }
+};
+
+const removeShipFromPort = (ID) => {
+  const ship = document.getElementById(ID);
+  if(ship){
+    ship.remove();
+  }
+}
 
 const renderGame = () => {
   renderBoard(PLAYER_ARRAY, PLAYER_SIDE_ELEMENT, "Player");
